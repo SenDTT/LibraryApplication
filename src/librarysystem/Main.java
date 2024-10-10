@@ -11,7 +11,7 @@ public class Main {
 	      EventQueue.invokeLater(() -> 
 	         {
 	            JFrame frame = new TemplateFrame();
-	            frame.setTitle("Book Club");
+	            frame.setTitle("Library System");
 	            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	            centerFrameOnDesktop(frame);
 	            frame.setVisible(true);

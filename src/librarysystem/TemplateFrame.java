@@ -86,7 +86,7 @@ public class TemplateFrame extends JFrame implements DataCallback {
 		JTextArea textArea = new JTextArea(3,600);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
-        textArea.setText("Welcome to the Book Club!");
+        textArea.setText("Welcome to Library System!");
         textArea.setForeground(Color.BLUE);
         JScrollPane scrollPane = new JScrollPane(textArea);
         add(scrollPane, BorderLayout.SOUTH);
