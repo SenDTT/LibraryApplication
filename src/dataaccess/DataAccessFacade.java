@@ -61,8 +61,12 @@ public class DataAccessFacade implements DataAccess {
 	
 	
 	/////load methods - these place test data into the storage area
-	///// - used just once at startup  
+	///// - used just once at startup 
 	
+	@Override
+	public void updateBookMap(HashMap<String, Book> books) {
+		saveToStorage(StorageType.BOOKS, books);
+	}
 		
 	static void loadBookMap(List<Book> bookList) {
 		HashMap<String, Book> books = new HashMap<String, Book>();
