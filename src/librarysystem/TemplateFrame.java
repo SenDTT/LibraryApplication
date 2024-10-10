@@ -7,11 +7,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
-import java.util.*;
-import java.util.List;
 
 public class TemplateFrame extends JFrame implements DataCallback {
 	JList<String> linkList;
@@ -20,6 +15,7 @@ public class TemplateFrame extends JFrame implements DataCallback {
 	JPanel buttonBar;
 	private boolean[] enabled;
 	private BufferedImage backgroundImage;
+	private BufferedImage backgroundMenu;
 
 	public JList<String> getLinkList() {
 		return this.linkList;
@@ -49,25 +45,26 @@ public class TemplateFrame extends JFrame implements DataCallback {
 	}
 	
 	public TemplateFrame() {
+		try {
+            String currDirectory = System.getProperty("user.dir");
+            backgroundImage = ImageIO.read(new File(currDirectory + "/src/librarysystem/leftpanel.png"));
+            backgroundMenu = ImageIO.read(new File(currDirectory + "/src/images/bg_menu.jpeg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 		setSize(800, 600);
-		String[] items = {"Login", "View Titles", "Add Book"};
-		linkList = new JList<String>(items);	
-		boolean[] menuEnable = {true, false, false};
+		String[] items = {"Login", "View Titles", "Add Book", "Add Book Copy"};
+		linkList = new JList<String>(items);
+		boolean[] menuEnable = {true, false, false, true};
 		this.setEnable(menuEnable);
 		setJListMenu(menuEnable);
 		createPanels();	
-		linkList.setSelectedIndex(0); 
+		linkList.setSelectedIndex(0);
 		
 		// set up split panes
 		JSplitPane splitPane = new JSplitPane(
 			JSplitPane.HORIZONTAL_SPLIT, linkList, cards);
-		try {
-            String currDirectory = System.getProperty("user.dir");
-            backgroundImage = ImageIO.read(new File(currDirectory + "/src/librarysystem/leftpanel.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 		 // Create the left panel with a background image
         JPanel linkList = new JPanel() {
             @Override
@@ -105,11 +102,13 @@ public class TemplateFrame extends JFrame implements DataCallback {
 		LoginForm loginForm = new LoginForm(this);
 		ViewTitlesForm viewTitlesForm = new ViewTitlesForm();
 		AddBookForm addBookForm = new AddBookForm();
+		AddBookCopyForm addBookCopyForm = new AddBookCopyForm();
 
 		cards = new JPanel(new CardLayout());
 		cards.add(loginForm, "Login");
 		cards.add(viewTitlesForm, "View Titles");
 		cards.add(addBookForm, "Add Book");
+		cards.add(addBookCopyForm, "Add Book Copy");
 		
 		// Connect JList elements to CardLayout panels
 		linkList.addListSelectionListener(event -> {
