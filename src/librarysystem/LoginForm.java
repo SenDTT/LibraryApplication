@@ -2,13 +2,19 @@ package librarysystem;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import dataaccess.*;
+import dataaccess.User;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LoginForm extends JPanel {
     private JTextField usernameField;
@@ -107,22 +113,23 @@ public class LoginForm extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 String username = usernameField.getText();
                 String password = String.valueOf(passwordField.getPassword());
-                List<User> logins = Data.logins;
+                DataAccess da = new DataAccessFacade();
+                Map<String, User> users = da.readUserMap();
                 boolean isSuccess = false;
-                for (User user : logins) {
-                    if (username.equals(user.username) && password.equals(user.password)) {
+                for (User user : users.values()) {
+                    if (username.equals(user.getId()) && password.equals(user.getPassword())) {
                         isSuccess = true;
-                        switch (user.authorization) {
+                        switch (user.getAuthorization()) {
                             case LIBRARIAN:
-                                boolean[] enabledSeller = {true, true, false, false};
+                                boolean[] enabledSeller = {true, true, false, false, false};
                                 callback.onLoginSuccess(enabledSeller);
                                 break;
                             case ADMIN:
-                                boolean[] enabledMember = {true, false, true, true};
+                                boolean[] enabledMember = {true, false, true, false, false};
                                 callback.onLoginSuccess(enabledMember);
                                 break;
                             case BOTH:
-                                boolean[] enabledBoth = {true, true, true, true};
+                                boolean[] enabledBoth = {true, true, true, false, false};
                                 callback.onLoginSuccess(enabledBoth);
                                 break;
                         }
