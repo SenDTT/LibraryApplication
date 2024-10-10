@@ -106,12 +106,14 @@ public class TemplateFrame extends JFrame implements DataCallback {
 		ViewTitlesForm viewTitlesForm = new ViewTitlesForm();
 		AddBookForm addBookForm = new AddBookForm();
 		CheckoutForm checkoutForm = new CheckoutForm();
+		AddMemberForm addMemberForm = new AddMemberForm();
 
 		cards = new JPanel(new CardLayout());
 		cards.add(loginForm, "Login");
 		cards.add(viewTitlesForm, "View Titles");
 		cards.add(addBookForm, "Add Book");
 		cards.add(checkoutForm, "Checkout");
+		cards.add(addMemberForm, "Add Library Member");
 		
 		// Connect JList elements to CardLayout panels
 		linkList.addListSelectionListener(event -> {

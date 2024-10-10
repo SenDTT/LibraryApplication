@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -18,6 +19,33 @@ public class Util {
 	public static final Color LINK_AVAILABLE = DARK_BLUE;
 	public static final Color LINK_NOT_AVAILABLE = Color.gray;
 	//rgb(18, 75, 14)
+	
+	public static String getAlphaNumericString(int n) 
+	 { 
+	 
+	  // choose a Character random from this String 
+	  String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	         + "0123456789"
+	         + "abcdefghijklmnopqrstuvxyz"; 
+	 
+	  // create StringBuffer size of AlphaNumericString 
+	  StringBuilder sb = new StringBuilder(n); 
+	 
+	  for (int i = 0; i < n; i++) { 
+	 
+	   // generate a random number between 
+	   // 0 to AlphaNumericString variable length 
+	   int index 
+	    = (int)(AlphaNumericString.length() 
+	      * Math.random()); 
+	 
+	   // add Character one by one in end of sb 
+	   sb.append(AlphaNumericString 
+	      .charAt(index)); 
+	  } 
+	 
+	  return sb.toString(); 
+	} 
 	
 	public static Font makeSmallFont(Font f) {
         return new Font(f.getName(), f.getStyle(), (f.getSize()-2));
