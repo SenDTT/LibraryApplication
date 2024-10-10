@@ -117,26 +117,6 @@ public class TemplateFrame extends JFrame implements DataCallback {
 			CardLayout cl = (CardLayout) (cards.getLayout());
 			cl.show(cards, value);
 		});
-		
-		
-		linkList.setCellRenderer(new ListCellRenderer<String>() {
-			@Override
-			public Component getListCellRendererComponent(JList<? extends String> list, String value, int index, boolean isSelected, boolean cellHasFocus) {
-				JLabel label = new JLabel(value);
-				label.setOpaque(true);  // Make sure the background color is painted
-                
-				// If item is selected, set the background to light blue and text to white
-				if (isSelected) {
-					label.setForeground(Color.black);
-					label.setBackground(new Color(224, 255, 224));
-				} else {
-					label.setBackground(Color.white);
-					label.setForeground(Color.gray);
-				}
-				
-				return label;
-			}
-		});
 	}
 
 	private static final long serialVersionUID = -760156396736751840L;
