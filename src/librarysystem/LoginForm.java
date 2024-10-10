@@ -114,15 +114,15 @@ public class LoginForm extends JPanel {
                         isSuccess = true;
                         switch (user.authorization) {
                             case LIBRARIAN:
-                                boolean[] enabledSeller = {true, true, false};
+                                boolean[] enabledSeller = {true, true, false, false, false};
                                 callback.onLoginSuccess(enabledSeller);
                                 break;
                             case ADMIN:
-                                boolean[] enabledMember = {true, false, true};
+                                boolean[] enabledMember = {true, false, true, false, false};
                                 callback.onLoginSuccess(enabledMember);
                                 break;
                             case BOTH:
-                                boolean[] enabledBoth = {true, true, true};
+                                boolean[] enabledBoth = {true, true, true, false, false};
                                 callback.onLoginSuccess(enabledBoth);
                                 break;
                         }
