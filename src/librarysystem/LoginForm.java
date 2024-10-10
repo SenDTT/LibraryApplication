@@ -113,11 +113,11 @@ public class LoginForm extends JPanel {
                     if (username.equals(user.username) && password.equals(user.password)) {
                         isSuccess = true;
                         switch (user.authorization) {
-                            case SELLER:
+                            case LIBRARIAN:
                                 boolean[] enabledSeller = {true, true, false};
                                 callback.onLoginSuccess(enabledSeller);
                                 break;
-                            case MEMBER:
+                            case ADMIN:
                                 boolean[] enabledMember = {true, false, true};
                                 callback.onLoginSuccess(enabledMember);
                                 break;

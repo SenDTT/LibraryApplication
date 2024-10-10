@@ -59,8 +59,8 @@ public class Data {
     public static List<User> logins = new ArrayList<>() {
     	
     	{
-           add(new User("Joe", "111", Auth.SELLER));
-           add(new User("Ann", "101", Auth.MEMBER));
+           add(new User("Joe", "111", Auth.LIBRARIAN));
+           add(new User("Ann", "101", Auth.ADMIN));
            add(new User("Dave", "102", Auth.BOTH));
     	}
     };

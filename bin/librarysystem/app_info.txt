@@ -2,11 +2,11 @@ Here is the user data for this application:
 
 username: Joe
 password: 111 
-authorization: SELLER
+authorization: LIBRARIAN
            
 username: Ann
 password: 101 
-authorization: MEMBER
+authorization: ADMIN
 
 username: Dave
 password: 102 
