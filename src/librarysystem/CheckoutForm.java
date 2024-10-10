@@ -117,14 +117,13 @@ public class CheckoutForm extends JPanel {
         LibraryMember member = membersDatabase.get(memberId);
 
         if (member != null) {
-            // Tìm sách dựa trên ID
-            Book bookToCheckout = booksDatabase.get(selectedBookId.split(" - ")[0]);
+        	String isbn = selectedBookId.split(" - ")[0];
+            Book bookToCheckout = booksDatabase.get(isbn);
 
             if (bookToCheckout != null && bookToCheckout.isAvailable()) {
             	DataAccess da = new DataAccessFacade();
-                // Cập nhật trạng thái sách
-                //bookToCheckout.setAvailable(false);
-                //member.addBook(bookToCheckout);
+            	
+            	da.checkoutBook(memberId, isbn);
             	
             	JOptionPane.showMessageDialog(this, "Book checked out successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
             	memberIdField.setText("");

@@ -6,11 +6,14 @@ import java.io.Serializable;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import business.Book;
 import business.BookCopy;
+import business.CheckoutEntry;
 import business.LibraryMember;
 import dataaccess.DataAccessFacade.StorageType;
 
@@ -114,7 +117,41 @@ public class DataAccessFacade implements DataAccess {
 		return retVal;
 	}
 	
+
+	public HashMap<String, Book> getBooks() {
+		HashMap<String, Book> books = (HashMap<String, Book>) readFromStorage(StorageType.BOOKS);
+		if (Objects.isNull(books)) {
+			books = new HashMap<>();
+		}
+		return books;
+	}
 	
+	public void checkoutBook(String memberId, String isbn) {
+        //get member
+        HashMap<String, LibraryMember> members = readMemberMap();
+        LibraryMember member = members.get(memberId);
+
+        //get book
+        HashMap<String, Book> books = getBooks();
+        Book b = books.get(isbn);
+        BookCopy currentCopy = b.getNextAvailableCopy();
+
+        //create new entry
+        CheckoutEntry newEntry = new CheckoutEntry(LocalDate.now().plusDays(currentCopy.getBook().getMaxCheckoutLength()),
+                currentCopy, member);
+        //add entry to member's record
+        member.getCheckoutEntries().add(newEntry);
+
+        //savebook
+        currentCopy.changeAvailability();
+        b.updateCopies(currentCopy);
+        books.put(isbn, b);
+        saveToStorage(StorageType.BOOKS, books);
+
+        //save members
+        members.put(memberId, member);
+        saveToStorage(StorageType.MEMBERS, members);
+    }
 	
 	final static class Pair<S,T> implements Serializable{
 		
