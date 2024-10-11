@@ -131,7 +131,7 @@ public class DataAccessFacade implements DataAccess {
 		return books;
 	}
 	
-	public CheckoutEntry checkoutBook(String memberId, String isbn) {
+	public CheckoutEntry checkoutBook(String memberId, String isbn, User user) {
         //get member
         HashMap<String, LibraryMember> members = readMemberMap();
         LibraryMember member = members.get(memberId);
@@ -143,7 +143,7 @@ public class DataAccessFacade implements DataAccess {
 
         //create new entry
         CheckoutEntry newEntry = new CheckoutEntry(LocalDate.now().plusDays(b.getMaxCheckoutLength()),
-                currentCopy, member);
+                currentCopy, member, user);
         //add entry to member's record
         member.getCheckoutEntries().add(newEntry);
 
