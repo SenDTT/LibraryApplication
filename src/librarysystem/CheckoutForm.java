@@ -81,7 +81,7 @@ public class CheckoutForm extends JPanel {
         add(statusLabel, gbc);
 
         // Table to display checkout records
-        String[] columnNames = {"Member", "Book ISBN", "Title", "Checkout Date", "Due Date"};
+        String[] columnNames = {"Copy ID", "Member", "Book ISBN", "Title", "Checkout Date", "Due Date"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -115,6 +115,7 @@ public class CheckoutForm extends JPanel {
                 DataAccess da = new DataAccessFacade();
                 CheckoutEntry resCheckoutEntry = da.checkoutBook(memberId, isbn);
                 tableModel.addRow(new Object[]{
+                		resCheckoutEntry.getBookCopy().getCopyNum(),
                 		memberId,
                 		isbn, 
                 		resCheckoutEntry.getBookCopy().getBook().getTitle(), 
@@ -169,11 +170,12 @@ public class CheckoutForm extends JPanel {
         DataAccess da = new DataAccessFacade();
         for (LibraryMember member :  da.readMemberMap().values()) {
 	        for (CheckoutEntry entry : member.getCheckoutEntries()) {
-		        if (entry.getBookCopy().getBook().getIsbn().equals(isbn)) {
+		        if (entry.getBookCopy().getBook().getIsbn().equals(isbn) && entry.getBookCopy().isAvailable() == false) {
 		            String bookTitle = entry.getBookCopy().getBook().getTitle();
+		            int copyNum = entry.getBookCopy().getCopyNum();
 		            LocalDate checkoutDate = entry.getCheckedOutDate();
 		            LocalDate dueDate = entry.getDueDate();
-		            tableModel.addRow(new Object[]{member.getMemberId(), isbn, bookTitle, checkoutDate, dueDate});
+		            tableModel.addRow(new Object[]{copyNum, member.getMemberId(), isbn, bookTitle, checkoutDate, dueDate});
 	        	}
 	        }
         }
