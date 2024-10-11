@@ -150,7 +150,6 @@ public class CheckoutForm extends JPanel{
 
         if (book == null) {
         	tableModel.setRowCount(0);
-//            JOptionPane.showMessageDialog(this, "Book not found!", "Error", JOptionPane.ERROR_MESSAGE);
             statusLabel.setText("Status: Book not found.");
             checkoutButton.setEnabled(false);
             return;
@@ -159,14 +158,12 @@ public class CheckoutForm extends JPanel{
         loadCheckoutRecordsForBook(isbn);
         
         if (member == null) {
-//            JOptionPane.showMessageDialog(this, "Library Member not found!", "Error", JOptionPane.ERROR_MESSAGE);
             statusLabel.setText("Status: Member not found.");
             checkoutButton.setEnabled(false);
             return;
         }
 
         if (!book.isAvailable()) {
-//            JOptionPane.showMessageDialog(this, "No copies of the book are available for checkout.", "Error", JOptionPane.ERROR_MESSAGE);
             statusLabel.setText("Status: Book not available.");
             checkoutButton.setEnabled(false);
         } else {
