@@ -25,6 +25,7 @@ public class SystemController implements ControllerInterface {
 		currentAuth = map.get(id).getAuthorization();
 		
 	}
+	
 	@Override
 	public List<String> allMemberIds() {
 		DataAccess da = new DataAccessFacade();
@@ -39,6 +40,24 @@ public class SystemController implements ControllerInterface {
 		List<String> retval = new ArrayList<>();
 		retval.addAll(da.readBooksMap().keySet());
 		return retval;
+	}
+	
+	@Override
+	public boolean addBookCopies(Book book, int quantity) {
+		try {
+			for (int i = 0; i < quantity; i++) {
+				book.addCopy();
+			}
+		} catch (Exception e) {
+			return false;
+		}
+
+		DataAccessFacade da = new DataAccessFacade();
+		HashMap<String, Book> books = da.readBooksMap();
+		books.put(book.getIsbn(), book);
+		da.updateBookMap(books);
+		
+		return true;
 	}
 	
 	
