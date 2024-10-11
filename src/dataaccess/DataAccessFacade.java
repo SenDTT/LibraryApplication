@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import business.Author;
 import business.Book;
 import business.BookCopy;
 import business.CheckoutEntry;
@@ -21,7 +22,7 @@ import dataaccess.DataAccessFacade.StorageType;
 public class DataAccessFacade implements DataAccess {
 	
 	enum StorageType {
-		BOOKS, MEMBERS, USERS;
+		BOOKS, MEMBERS, USERS, AUTHORS;
 	}
 	
 	public static final String OUTPUT_DIR = System.getProperty("user.dir") 
@@ -157,6 +158,19 @@ public class DataAccessFacade implements DataAccess {
         saveToStorage(StorageType.MEMBERS, members);
         return newEntry;
     }
+	
+	//implement: other save operations
+	public void saveNewAuthor(Author author) {
+		HashMap<String, Author> authors = readAuthorMap();
+		String authorId = author.getAuthorId();
+		authors.put(authorId, author);
+		saveToStorage(StorageType.AUTHORS, authors);	
+	}
+
+	@SuppressWarnings("unchecked")
+	public HashMap<String, Author> readAuthorMap() {
+		return (HashMap<String, Author>)readFromStorage(StorageType.AUTHORS);
+	}
 	
 	final static class Pair<S,T> implements Serializable{
 		

@@ -76,7 +76,7 @@ public class AddBookForm extends JPanel {
             	String firstName = firstNameField.getText();
             	String lastName = lastNameField.getText();
             	String bookTitleString = bookTitleField.getText();
-            	if (firstName == "" || lastName == "" || bookTitleString == "") {
+            	if (firstName.equals("") || lastName.equals("") || bookTitleString.equals("")) {
             		JOptionPane.showMessageDialog(
                 			AddBookForm.this,
                             "Please fill all data!!!",
