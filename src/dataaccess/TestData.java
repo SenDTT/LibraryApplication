@@ -27,9 +27,11 @@ public class TestData {
 		td.bookData();
 		td.libraryMemberData();
 		td.userData();
+		td.saveAuthor();
 		DataAccess da = new DataAccessFacade();
 		System.out.println(da.readBooksMap());
 		System.out.println(da.readUserMap());
+		System.out.println(da.readAuthorMap());
 	}
 	///create books
 	public void bookData() {
@@ -40,6 +42,10 @@ public class TestData {
 		allBooks.get(2).addCopy();
 		allBooks.get(2).addCopy();
 		DataAccessFacade.loadBookMap(allBooks);
+	}
+	
+	public void saveAuthor() {
+		DataAccessFacade.loadAuthorsMap(allAuthors);
 	}
 	
 	public void userData() {

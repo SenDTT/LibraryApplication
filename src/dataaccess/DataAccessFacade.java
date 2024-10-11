@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import business.Author;
 import business.Book;
 import business.BookCopy;
 import business.CheckoutEntry;
@@ -21,7 +22,7 @@ import dataaccess.DataAccessFacade.StorageType;
 public class DataAccessFacade implements DataAccess {
 	
 	enum StorageType {
-		BOOKS, MEMBERS, USERS;
+		BOOKS, MEMBERS, USERS, AUTHORS;
 	}
 	
 	public static final String OUTPUT_DIR = System.getProperty("user.dir") 
@@ -83,6 +84,12 @@ public class DataAccessFacade implements DataAccess {
 		HashMap<String, LibraryMember> members = new HashMap<String, LibraryMember>();
 		memberList.forEach(member -> members.put(member.getMemberId(), member));
 		saveToStorage(StorageType.MEMBERS, members);
+	}
+	
+	static void loadAuthorsMap(List<Author> authorList) {
+		HashMap<String, Author> authors = new HashMap<String, Author>();
+		authorList.forEach(author -> authors.put(author.getAuthorId(), author));
+		saveToStorage(StorageType.AUTHORS, authors);
 	}
 	
 	static void saveToStorage(StorageType type, Object ob) {
@@ -185,6 +192,21 @@ public class DataAccessFacade implements DataAccess {
 			return "(" + first.toString() + ", " + second.toString() + ")";
 		}
 		private static final long serialVersionUID = 5399827794066637059L;
+	}
+
+	@Override
+	public void saveNewBook(Book book) {
+		HashMap<String, Book> books = readBooksMap();
+		String isbn = book.getIsbn();
+		books.put(isbn, book);
+		saveToStorage(StorageType.BOOKS, books);	
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public HashMap<String, Author> readAuthorMap() {
+		// TODO Auto-generated method stub
+		return (HashMap<String,Author>) readFromStorage(StorageType.AUTHORS);
 	}
 	
 }

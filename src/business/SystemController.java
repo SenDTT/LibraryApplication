@@ -11,6 +11,7 @@ import dataaccess.User;
 
 public class SystemController implements ControllerInterface {
 	public static Auth currentAuth = null;
+	DataAccessFacade da = new DataAccessFacade();
 	
 	public void login(String id, String password) throws LoginException {
 		DataAccess da = new DataAccessFacade();
@@ -52,10 +53,21 @@ public class SystemController implements ControllerInterface {
 			return false;
 		}
 
-		DataAccessFacade da = new DataAccessFacade();
 		HashMap<String, Book> books = da.readBooksMap();
 		books.put(book.getIsbn(), book);
 		da.updateBookMap(books);
+		
+		return true;
+	}
+
+	@Override
+	public boolean addNewBook(String isbn, String title, int maxCheckoutLength, List<Author> authors) {
+		try {
+			Book newBook = new Book(isbn, title, maxCheckoutLength, authors);
+			da.saveNewBook(newBook);
+		} catch (Exception e) {
+			return false;
+		}
 		
 		return true;
 	}

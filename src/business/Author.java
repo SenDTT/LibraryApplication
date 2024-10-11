@@ -2,10 +2,16 @@ package business;
 
 import java.io.Serializable;
 
+import librarysystem.Util;
+
 final public class Author extends Person implements Serializable {
 	private String bio;
 	public String getBio() {
 		return bio;
+	}
+	
+	public String getAuthorId() {
+		return Util.getAlphaNumericString(4);
 	}
 	
 	public Author(String f, String l, String t, Address a, String bio) {
