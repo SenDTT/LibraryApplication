@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 
 import business.Book;
-import business.BookCopy;
 import business.ControllerInterface;
 import business.SystemController;
 import dataaccess.DataAccess;
@@ -52,7 +51,7 @@ public class AddBookCopyForm extends JPanel {
 		// Create the header label
 		JLabel headerLabel = new JLabel("Add Book Copy", JLabel.LEFT);
 		headerLabel.setFont(new Font("Arial", Font.BOLD, 16));
-		headerLabel.setForeground(Color.WHITE);
+		headerLabel.setForeground(Color.BLUE);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.gridwidth = 2; // Span across two columns
@@ -62,7 +61,7 @@ public class AddBookCopyForm extends JPanel {
 		// Add the quantity label and text field
 		JLabel bookLabel = new JLabel("Book:");
 		bookLabel.setFont(new Font("Arial", Font.BOLD, 13));
-		bookLabel.setForeground(Color.WHITE);
+//		bookLabel.setForeground(Color.WHITE);
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.fill = GridBagConstraints.NONE;
@@ -86,7 +85,7 @@ public class AddBookCopyForm extends JPanel {
 		Integer qty = bookQuantities.getOrDefault(bookListModel.getElementAt(0), 0);
 		currentQuantityLabel = new JLabel("Current Quantity: " + qty);
 		currentQuantityLabel.setFont(new Font("Arial", Font.BOLD, 13));
-		currentQuantityLabel.setForeground(Color.WHITE);
+//		currentQuantityLabel.setForeground(Color.WHITE);
 		gbc.gridx = 1;
 		gbc.gridy = 2;
 		gbc.fill = GridBagConstraints.NONE;
@@ -95,7 +94,7 @@ public class AddBookCopyForm extends JPanel {
 		// Add the quantity label and text field
 		JLabel qtyLabel = new JLabel("Quantity:");
 		qtyLabel.setFont(new Font("Arial", Font.BOLD, 13));
-		qtyLabel.setForeground(Color.WHITE);
+//		qtyLabel.setForeground(Color.WHITE);
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		gbc.gridwidth = 1;
@@ -199,7 +198,7 @@ public class AddBookCopyForm extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (backgroundImage != null) {
-            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+//            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
         }
     }
 }
