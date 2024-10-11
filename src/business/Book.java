@@ -63,7 +63,7 @@ final public class Book implements Serializable {
 	
 	
 	public boolean isAvailable() {
-		if(copies == null) {
+		if(copies == null || (copies != null && copies.length == 0)) {
 			return false;
 		}
 		return Arrays.stream(copies)

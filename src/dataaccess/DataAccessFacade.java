@@ -130,7 +130,7 @@ public class DataAccessFacade implements DataAccess {
 		return books;
 	}
 	
-	public void checkoutBook(String memberId, String isbn) {
+	public CheckoutEntry checkoutBook(String memberId, String isbn) {
         //get member
         HashMap<String, LibraryMember> members = readMemberMap();
         LibraryMember member = members.get(memberId);
@@ -141,7 +141,7 @@ public class DataAccessFacade implements DataAccess {
         BookCopy currentCopy = b.getNextAvailableCopy();
 
         //create new entry
-        CheckoutEntry newEntry = new CheckoutEntry(LocalDate.now().plusDays(currentCopy.getBook().getMaxCheckoutLength()),
+        CheckoutEntry newEntry = new CheckoutEntry(LocalDate.now().plusDays(b.getMaxCheckoutLength()),
                 currentCopy, member);
         //add entry to member's record
         member.getCheckoutEntries().add(newEntry);
@@ -155,6 +155,7 @@ public class DataAccessFacade implements DataAccess {
         //save members
         members.put(memberId, member);
         saveToStorage(StorageType.MEMBERS, members);
+        return newEntry;
     }
 	
 	final static class Pair<S,T> implements Serializable{
