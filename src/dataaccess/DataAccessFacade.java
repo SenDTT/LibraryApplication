@@ -137,7 +137,7 @@ public class DataAccessFacade implements DataAccess {
 		return books;
 	}
 	
-	public CheckoutEntry checkoutBook(String memberId, String isbn) {
+	public CheckoutEntry checkoutBook(String memberId, String isbn, User user) {
         //get member
         HashMap<String, LibraryMember> members = readMemberMap();
         LibraryMember member = members.get(memberId);
@@ -149,7 +149,7 @@ public class DataAccessFacade implements DataAccess {
 
         //create new entry
         CheckoutEntry newEntry = new CheckoutEntry(LocalDate.now().plusDays(b.getMaxCheckoutLength()),
-                currentCopy, member);
+                currentCopy, member, user);
         //add entry to member's record
         member.getCheckoutEntries().add(newEntry);
 
@@ -164,6 +164,19 @@ public class DataAccessFacade implements DataAccess {
         saveToStorage(StorageType.MEMBERS, members);
         return newEntry;
     }
+	
+	//implement: other save operations
+	public void saveNewAuthor(Author author) {
+		HashMap<String, Author> authors = readAuthorMap();
+		String authorId = author.getAuthorId();
+		authors.put(authorId, author);
+		saveToStorage(StorageType.AUTHORS, authors);	
+	}
+
+	@SuppressWarnings("unchecked")
+	public HashMap<String, Author> readAuthorMap() {
+		return (HashMap<String, Author>)readFromStorage(StorageType.AUTHORS);
+	}
 	
 	final static class Pair<S,T> implements Serializable{
 		
@@ -200,13 +213,6 @@ public class DataAccessFacade implements DataAccess {
 		String isbn = book.getIsbn();
 		books.put(isbn, book);
 		saveToStorage(StorageType.BOOKS, books);	
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public HashMap<String, Author> readAuthorMap() {
-		// TODO Auto-generated method stub
-		return (HashMap<String,Author>) readFromStorage(StorageType.AUTHORS);
 	}
 	
 }

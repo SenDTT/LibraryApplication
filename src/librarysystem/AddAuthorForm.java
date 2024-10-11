@@ -16,13 +16,18 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import business.Address;
-import business.LibraryMember;
+import business.Author;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessFacade;
 
-public class AddMemberForm extends JPanel {
+public class AddAuthorForm extends JPanel {
 
-    public AddMemberForm() {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6550602971964258890L;
+
+	public AddAuthorForm() {
         setLayout(new BorderLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5); // Padding around components
@@ -30,7 +35,7 @@ public class AddMemberForm extends JPanel {
         JPanel formPanel = new JPanel(new GridBagLayout());
 
         // Create the header label
-        JLabel headerLabel = new JLabel("Add Library Member", JLabel.LEFT);
+        JLabel headerLabel = new JLabel("Add Author", JLabel.LEFT);
         headerLabel.setFont(new Font("Arial", Font.BOLD, 16));
         headerLabel.setForeground(Color.BLUE);
         gbc.gridx = 0;
@@ -72,6 +77,17 @@ public class AddMemberForm extends JPanel {
         gbc.gridx = 1;
         gbc.gridy = 3;
         formPanel.add(phoneNumberField, gbc);
+        
+        // Bio Label and Text Field
+        JLabel bioLabel = new JLabel("Bio");
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        formPanel.add(bioLabel, gbc);
+
+        JTextField bioField = new JTextField(15);
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        formPanel.add(bioField, gbc);
         
         // Address Label and Text Field
         JLabel addressLabel = new JLabel("Address");
@@ -120,7 +136,7 @@ public class AddMemberForm extends JPanel {
         formPanel.add(zipField, gbc);
         
         // Add Book Button
-        JButton addButton = new JButton("Add Member");
+        JButton addButton = new JButton("Add Author");
         gbc.gridx = 0;
         gbc.gridy = 10;
         gbc.gridwidth = 2; // Span across two columns to center the button
@@ -132,8 +148,9 @@ public class AddMemberForm extends JPanel {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	String firstName = firstNameField.getText();
-            	String lastName = lastNameField.getText();
+            	String firstName = firstNameField.getText().trim();
+            	String lastName = lastNameField.getText().trim();
+            	String bioString = bioField.getText().trim();
             	String phoneNumberString = phoneNumberField.getText().trim();
             	String streetString = streetField.getText().trim();
             	String cityString = cityField.getText().trim();
@@ -141,14 +158,15 @@ public class AddMemberForm extends JPanel {
             	String zipString = zipField.getText().trim();
             	
             	if (firstName.equals("") || lastName.equals("") 
-            						|| phoneNumberString.equals("")
+            						|| phoneNumberString.equals("") 
+            						|| bioString.equals("")
             						|| streetString.equals("")
             						|| cityString.equals("")
             						|| stateString.equals("")
             						|| zipString.equals("")
             						) {
             		JOptionPane.showMessageDialog(
-                			AddMemberForm.this,
+                			AddAuthorForm.this,
                             "Please fill all data!!!",
                             "Info",
                             JOptionPane.INFORMATION_MESSAGE
@@ -160,18 +178,19 @@ public class AddMemberForm extends JPanel {
             				cityString, 
             				phoneNumberString, 
             				streetString);
-            		LibraryMember member = new LibraryMember(
+            		Author author = new Author(
             				Util.getAlphaNumericString(6), 
             				firstName, 
             				lastName, 
             				phoneNumberString, 
-            				address);
+            				address,
+            				bioString);
             		
             		DataAccess da = new DataAccessFacade();
-            		da.saveNewMember(member);
+            		da.saveNewAuthor(author);
             		JOptionPane.showMessageDialog(
-                			AddMemberForm.this,
-                            "Add book Successfull!!!",
+                			AddAuthorForm.this,
+                            "Add Author Successfull!!!",
                             "Info",
                             JOptionPane.INFORMATION_MESSAGE
                     );
@@ -183,9 +202,9 @@ public class AddMemberForm extends JPanel {
                 	cityField.setText("");
                 	stateField.setText("");
                 	zipField.setText("");
+                	bioField.setText("");
             	}
             }
         });
     }
 }
-

@@ -6,16 +6,19 @@ import java.time.LocalDate;
 
 import dataaccess.DataAccess;
 import dataaccess.DataAccessFacade;
+import dataaccess.User;
 
 final public class CheckoutEntry implements Serializable {
 	private LibraryMember libraryMember;
 	private BookCopy bookCopy;
+	private User user;
     private LocalDate dueDate;
     private LocalDate checkedOutDate;
     private double fine;
     private boolean isCheckedIn;
 
-    public CheckoutEntry(LocalDate dueDate, BookCopy bookCopy, LibraryMember libraryMember) {
+    public CheckoutEntry(LocalDate dueDate, BookCopy bookCopy, LibraryMember libraryMember, User user) {
+    	this.user = user;
         this.dueDate = dueDate;
         this.bookCopy = bookCopy;
         this.libraryMember = libraryMember;
@@ -58,6 +61,10 @@ final public class CheckoutEntry implements Serializable {
 
     public BookCopy getCheckOutBook() {
         return bookCopy;
+    }
+    
+    public User getUser() {
+        return user;
     }
 
     public String toString() {
