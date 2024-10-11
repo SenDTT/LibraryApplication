@@ -130,11 +130,11 @@ public class AddBookCopyForm extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedBook = (String) bookList.getSelectedItem();
-                String quantityText = quantityField.getText();
+                String quantityText = quantityField.getText().trim();
                 String isbn = selectedBook.substring(0, selectedBook.indexOf(" - "));
 
                 // Check if the quantity is a number
-                if (!isValidNumber(quantityText)) {
+                if (quantityText.equals("") || !Util.isNumeric(quantityText)) {
                     JOptionPane.showMessageDialog(null, 
                         "Please enter a valid number for quantity.", 
                         "Invalid Input", 
@@ -171,16 +171,6 @@ public class AddBookCopyForm extends JPanel {
                 }
             }
         });
-	}
-
-	// Helper method to check if the input is a valid number
-	private boolean isValidNumber(String text) {
-	    try {
-	        Integer.parseInt(text);
-	        return true;
-	    } catch (NumberFormatException e) {
-	        return false;
-	    }
 	}
 	
 	private void loadBooks() {
