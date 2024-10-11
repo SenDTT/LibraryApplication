@@ -12,11 +12,11 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessFacade;
 import dataaccess.User;
 
-public class CheckoutForm extends JPanel{
+public class PrintCheckoutRecordForm extends JPanel{
     private JTextField memberIdField;
     private JTextField isbnField;
     private JButton findMemberButton;
-    private JButton checkoutButton;
+    private JButton printButton;
     private JLabel statusLabel;
     private JTable checkoutTable;
     private DefaultTableModel tableModel;
@@ -24,7 +24,7 @@ public class CheckoutForm extends JPanel{
     private Map<String, Book> booksDatabase;
     private DataCallback callback;
 
-    public CheckoutForm(DataCallback callback) {
+    public PrintCheckoutRecordForm(DataCallback callback) {
     	this.callback = callback;
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -45,22 +45,8 @@ public class CheckoutForm extends JPanel{
         gbc.weightx = 1.0;
         add(memberIdField, gbc);
 
-        // Input for ISBN
-        JLabel isbnLabel = new JLabel("ISBN:");
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 0;
-        add(isbnLabel, gbc);
-
-        isbnField = new JTextField(15);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.weightx = 1.0;
-        add(isbnField, gbc);
-
         // Button to find member
-        findMemberButton = new JButton("Find Member and Book");
+        findMemberButton = new JButton("Find Member");
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.gridheight = 1; // Corrected from 2 to 1
@@ -68,11 +54,11 @@ public class CheckoutForm extends JPanel{
         add(findMemberButton, gbc);
 
         // Button to checkout the book
-        checkoutButton = new JButton("Checkout Book");
-        checkoutButton.setEnabled(false);
+        printButton = new JButton("Print Checkout Record");
+        printButton.setEnabled(false);
         gbc.gridx = 2;
         gbc.gridy = 1;
-        add(checkoutButton, gbc);
+        add(printButton, gbc);
 
         // Label to display status
         statusLabel = new JLabel("Status: ");
@@ -105,90 +91,79 @@ public class CheckoutForm extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 String memberId = memberIdField.getText().trim();
-                String isbn = isbnField.getText().trim();
-                findMemberAndBook(memberId, isbn);
+                findMember(memberId);
             }
         });
 
-        checkoutButton.addActionListener(new ActionListener() {
+        printButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String memberId = memberIdField.getText().trim();
-                String isbn = isbnField.getText().trim();
                 DataAccess da = new DataAccessFacade();
-                CheckoutEntry resCheckoutEntry = da.checkoutBook(memberId, isbn, callback.getUser());
-                tableModel.addRow(new Object[]{
-                		resCheckoutEntry.getBookCopy().getCopyNum(),
-                		memberId,
-                		isbn, 
-                		resCheckoutEntry.getBookCopy().getBook().getTitle(), 
-                		resCheckoutEntry.getCheckedOutDate(), 
-                		resCheckoutEntry.getDueDate(),
-                		resCheckoutEntry.getUser().getId()
+                int i = 1;
+                for (LibraryMember member :  da.readMemberMap().values()) {
+                	if (member.getMemberId().equals(memberId)) {
+                		for (CheckoutEntry entry : member.getCheckoutEntries()) {
+            	            String bookTitle = entry.getBookCopy().getBook().getTitle();
+            	            int copyNum = entry.getBookCopy().getCopyNum();
+            	            LocalDate checkoutDate = entry.getCheckedOutDate();
+            	            LocalDate dueDate = entry.getDueDate();
+            	            User user = entry.getUser();
+            	            String isbn = entry.getBookCopy().getBook().getIsbn();
+            	            System.out.printf("\n\nCheckout No: %d \n", i);
+            	            System.out.printf("Copy Num: %s \nMember ID: %s \nISBN: %s \nBook Title: %s \nCheckout Date: %s \nDue Date: %s \nLibrarian ID: %s \n", copyNum, member.getMemberId(), isbn, bookTitle, checkoutDate, dueDate, user.getId());
+            	            i++;
+            	        }
                 	}
-                );
-                JOptionPane.showMessageDialog(CheckoutForm.this, "Book checked out successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                memberIdField.setText("");
-                isbnField.setText("");
-                checkoutButton.setEnabled(false);
-                statusLabel.setText("Status: ");
+                }
+                statusLabel.setText("Status: Print checkout record successful!!!");
             }
         });
     }
 
-    private void findMemberAndBook(String memberId, String isbn) {
-    	if (isbn.isEmpty()) {
-    		 statusLabel.setText("Status: Please input Book ISBN!!!");
-             checkoutButton.setEnabled(false);
+    private void findMember(String memberId) {
+    	if (memberId.isEmpty()) {
+    		 statusLabel.setText("Status: Please input Member ID!!!");
+    		 printButton.setEnabled(false);
              return;
     	}
     	DataAccess da = new DataAccessFacade();
     	this.membersDatabase = da.readMemberMap();
         this.booksDatabase = da.readBooksMap();
         LibraryMember member = membersDatabase.get(memberId);
-        Book book = booksDatabase.get(isbn);
-
-        if (book == null) {
-        	tableModel.setRowCount(0);
-//            JOptionPane.showMessageDialog(this, "Book not found!", "Error", JOptionPane.ERROR_MESSAGE);
-            statusLabel.setText("Status: Book not found.");
-            checkoutButton.setEnabled(false);
-            return;
-        }
-        
-        loadCheckoutRecordsForBook(isbn);
         
         if (member == null) {
-//            JOptionPane.showMessageDialog(this, "Library Member not found!", "Error", JOptionPane.ERROR_MESSAGE);
             statusLabel.setText("Status: Member not found.");
-            checkoutButton.setEnabled(false);
+            printButton.setEnabled(false);
             return;
         }
-
-        if (!book.isAvailable()) {
-//            JOptionPane.showMessageDialog(this, "No copies of the book are available for checkout.", "Error", JOptionPane.ERROR_MESSAGE);
-            statusLabel.setText("Status: Book not available.");
-            checkoutButton.setEnabled(false);
-        } else {
-            statusLabel.setText("Status: Book is available for checkout.");
-            checkoutButton.setEnabled(true);
-        } 
+        loadCheckoutRecordsForBook(memberId);
     }
     
-    private void loadCheckoutRecordsForBook(String isbn) {
+    private void loadCheckoutRecordsForBook(String memberId) {
+    	boolean flag = false;
+    	int count = 0;
         tableModel.setRowCount(0);
         DataAccess da = new DataAccessFacade();
         for (LibraryMember member :  da.readMemberMap().values()) {
 	        for (CheckoutEntry entry : member.getCheckoutEntries()) {
-		        if (entry.getBookCopy().getBook().getIsbn().equals(isbn) && entry.getBookCopy().isAvailable() == false) {
-		            String bookTitle = entry.getBookCopy().getBook().getTitle();
-		            int copyNum = entry.getBookCopy().getCopyNum();
-		            LocalDate checkoutDate = entry.getCheckedOutDate();
-		            LocalDate dueDate = entry.getDueDate();
-		            User user = entry.getUser();
-		            tableModel.addRow(new Object[]{copyNum, member.getMemberId(), isbn, bookTitle, checkoutDate, dueDate, user.getId()});
-	        	}
+	        	flag = true;
+	        	count++;
+	            String bookTitle = entry.getBookCopy().getBook().getTitle();
+	            int copyNum = entry.getBookCopy().getCopyNum();
+	            LocalDate checkoutDate = entry.getCheckedOutDate();
+	            LocalDate dueDate = entry.getDueDate();
+	            User user = entry.getUser();
+	            String isbn = entry.getBookCopy().getBook().getIsbn();
+	            tableModel.addRow(new Object[]{copyNum, member.getMemberId(), isbn, bookTitle, checkoutDate, dueDate, user.getId()});
 	        }
+        }
+        if (!flag) {
+        	statusLabel.setText("Status: Checkout record not found!!!");
+        	printButton.setEnabled(false);
+        } else {
+        	statusLabel.setText("Status: Found "+ count +" checkout entries!!!");
+        	printButton.setEnabled(true);
         }
     }
 }
