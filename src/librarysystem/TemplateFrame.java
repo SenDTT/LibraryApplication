@@ -8,6 +8,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import dataaccess.User;
+
 public class TemplateFrame extends JFrame implements DataCallback {
 	JList<String> linkList;
 	//context for CardLayout
@@ -16,6 +18,7 @@ public class TemplateFrame extends JFrame implements DataCallback {
 	private boolean[] enabled;
 	private BufferedImage backgroundImage;
 	private BufferedImage backgroundMenu;
+	private User user;
 
 	public JList<String> getLinkList() {
 		return this.linkList;
@@ -32,6 +35,17 @@ public class TemplateFrame extends JFrame implements DataCallback {
         }
         linkList.repaint();
     }
+	
+	@Override
+    public void setUser(User user) {
+        this.user = user;
+    }
+	
+	@Override
+    public User getUser() {
+        return this.user;
+    }
+	
 	
 	public void setJListMenu(boolean[] enabled) {
 		linkList.setSelectionModel(new DefaultListSelectionModel() {
@@ -54,9 +68,9 @@ public class TemplateFrame extends JFrame implements DataCallback {
         }
 
 		setSize(800, 600);
-		String[] items = {"Login", "Add Library Member", "Checkout", "Add Book", "Add Book Copy"};
+		String[] items = {"Login", "Add Library Member", "Checkout", "Add Book", "Add Book Copy", "Show Overdue Book", "Print Checkout Record"};
 		linkList = new JList<String>(items);	
-		boolean[] menuEnable = {true, false, true, false, false};
+		boolean[] menuEnable = {true, false, false, false, false, false, false};
 		this.setEnable(menuEnable);
 		setJListMenu(menuEnable);
 		createPanels();	
@@ -103,8 +117,10 @@ public class TemplateFrame extends JFrame implements DataCallback {
 		ViewTitlesForm viewTitlesForm = new ViewTitlesForm();
 		AddBookForm addBookForm = new AddBookForm();
 		AddBookCopyForm addBookCopyForm = new AddBookCopyForm();
-		CheckoutForm checkoutForm = new CheckoutForm();
+		CheckoutForm checkoutForm = new CheckoutForm(this);
 		AddMemberForm addMemberForm = new AddMemberForm();
+		DueDateForm dueDateForm = new DueDateForm(this);
+		PrintCheckoutRecordForm printCheckoutRecordForm = new PrintCheckoutRecordForm(this);
 
 		cards = new JPanel(new CardLayout());
 		cards.add(loginForm, "Login");
@@ -113,6 +129,8 @@ public class TemplateFrame extends JFrame implements DataCallback {
 		cards.add(addBookCopyForm, "Add Book Copy");
 		cards.add(checkoutForm, "Checkout");
 		cards.add(addMemberForm, "Add Library Member");
+		cards.add(dueDateForm, "Show Overdue Book");
+		cards.add(printCheckoutRecordForm, "Print Checkout Record");
 		
 		// Connect JList elements to CardLayout panels
 		linkList.addListSelectionListener(event -> {
