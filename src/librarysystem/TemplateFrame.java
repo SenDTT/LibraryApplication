@@ -54,9 +54,9 @@ public class TemplateFrame extends JFrame implements DataCallback {
         }
 
 		setSize(800, 600);
-		String[] items = {"Login", "Add Library Member", "Checkout", "Add Book", "Add Book Copy"};
+		String[] items = {"Login", "Add Library Member", "Checkout", "Add Book", "Add Book Copy", "Add Author"};
 		linkList = new JList<String>(items);	
-		boolean[] menuEnable = {true, false, true, false, false};
+		boolean[] menuEnable = {true, false, true, false, false, true};
 		this.setEnable(menuEnable);
 		setJListMenu(menuEnable);
 		createPanels();	
@@ -105,10 +105,12 @@ public class TemplateFrame extends JFrame implements DataCallback {
 		AddBookCopyForm addBookCopyForm = new AddBookCopyForm();
 		CheckoutForm checkoutForm = new CheckoutForm();
 		AddMemberForm addMemberForm = new AddMemberForm();
+		AddAuthorForm addAuthorForm = new AddAuthorForm();
 
 		cards = new JPanel(new CardLayout());
 		cards.add(loginForm, "Login");
 		cards.add(viewTitlesForm, "View Titles");
+		cards.add(addAuthorForm, "Add Author");
 		cards.add(addBookForm, "Add Book");
 		cards.add(addBookCopyForm, "Add Book Copy");
 		cards.add(checkoutForm, "Checkout");
