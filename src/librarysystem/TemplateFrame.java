@@ -68,7 +68,6 @@ public class TemplateFrame extends JFrame implements DataCallback {
         }
 
 		setSize(800, 600);
-		linkList = new JList<String>(items);	
 		String[] items = {"Login", "Add Library Member", "Checkout", "Add Book", "Add Book Copy", "Show Overdue Book", "Print Checkout Record", "Add Author"};
 		linkList = new JList<String>(items);	
 		boolean[] menuEnable = {true, false, false, false, false, false, false, false};
