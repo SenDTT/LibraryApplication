@@ -179,7 +179,7 @@ public class AddAuthorForm extends JPanel {
             				phoneNumberString, 
             				streetString);
             		Author author = new Author(
-            				Util.getAlphaNumericString(6), 
+            				Util.generalMemberId(6), 
             				firstName, 
             				lastName, 
             				phoneNumberString, 

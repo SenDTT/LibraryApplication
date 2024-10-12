@@ -161,7 +161,7 @@ public class AddMemberForm extends JPanel {
             				phoneNumberString, 
             				streetString);
             		LibraryMember member = new LibraryMember(
-            				Util.getAlphaNumericString(6), 
+            				Util.generalMemberId(6), 
             				firstName, 
             				lastName, 
             				phoneNumberString, 
