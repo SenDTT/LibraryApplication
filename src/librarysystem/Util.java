@@ -4,12 +4,17 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import business.Author;
+import business.LibraryMember;
+import dataaccess.DataAccess;
+import dataaccess.DataAccessFacade;
 import dataaccess.User;
 
 
@@ -22,7 +27,7 @@ public class Util {
 	public static final Color LINK_NOT_AVAILABLE = Color.gray;
 	//rgb(18, 75, 14)
 	
-	public static String getAlphaNumericString(int n) 
+	static String getAlphaNumericString(int n) 
 	 { 
 	 
 	  // choose a Character random from this String 
@@ -31,7 +36,7 @@ public class Util {
 	 
 	  // create StringBuffer size of AlphaNumericString 
 	  StringBuilder sb = new StringBuilder(n); 
-	 
+	  
 	  for (int i = 0; i < n; i++) { 
 	 
 	   // generate a random number between 
@@ -47,6 +52,30 @@ public class Util {
 	 
 	  return sb.toString(); 
 	} 
+	
+	public static String generalMemberId(int n) {
+		String memberId = getAlphaNumericString(n);
+		DataAccess da = new DataAccessFacade();
+		HashMap<String, LibraryMember> memberHash = da.readMemberMap();
+		while(true) {
+			if (!memberHash.containsKey(memberId)) {
+				return memberId;
+			}
+			memberId = getAlphaNumericString(n);
+		}
+	}
+	
+	public static String generalAuthorId(int n) {
+		String authorId = getAlphaNumericString(n);
+		DataAccess da = new DataAccessFacade();
+		HashMap<String, Author> authorHash = da.readAuthorMap();
+		while(true) {
+			if (!authorHash.containsKey(authorId)) {
+				return authorId;
+			}
+			authorId = getAlphaNumericString(n);
+		}
+	}
 	
 	public static Font makeSmallFont(Font f) {
         return new Font(f.getName(), f.getStyle(), (f.getSize()-2));

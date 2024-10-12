@@ -16,5 +16,6 @@ public interface DataAccess {
 	public void saveNewBook(Book book); 
 	public void updateBookMap(HashMap<String,Book> books);
 	public void saveNewAuthor(Author author);
+	public HashMap<String,Author> readAuthorMap();
 	public CheckoutEntry checkoutBook(String memberId, String isbn, User user);
 }
