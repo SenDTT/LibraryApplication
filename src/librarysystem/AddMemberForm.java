@@ -171,7 +171,7 @@ public class AddMemberForm extends JPanel {
             		da.saveNewMember(member);
             		JOptionPane.showMessageDialog(
                 			AddMemberForm.this,
-                            "Add book Successfull!!!",
+                            "Add Member Successfull!!!",
                             "Info",
                             JOptionPane.INFORMATION_MESSAGE
                     );
