@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.Vector;
+
 import business.*;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessFacade;
@@ -114,16 +116,7 @@ public class CheckoutForm extends JPanel{
             String isbn = isbnField.getText().trim();
 
             CheckoutEntry resCheckoutEntry = ci.checkoutBook(memberId, isbn, callback.getUser());
-            tableModel.addRow(new Object[]{
-            		resCheckoutEntry.getBookCopy().getCopyNum(),
-            		memberId,
-            		isbn, 
-            		resCheckoutEntry.getBookCopy().getBook().getTitle(), 
-            		resCheckoutEntry.getCheckedOutDate(), 
-            		resCheckoutEntry.getDueDate(),
-            		resCheckoutEntry.getUser().getId()
-            	}
-            );
+            tableModel.addRow((Vector<?>) renderTableRow(memberId, isbn, resCheckoutEntry));
             
             JOptionPane.showMessageDialog(CheckoutForm.this, "Book checked out successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
             memberIdField.setText("");
@@ -131,6 +124,18 @@ public class CheckoutForm extends JPanel{
             checkoutButton.setEnabled(false);
             statusLabel.setText("Status: ");
         }
+    }
+    
+    public Object renderTableRow(String memberId, String isbn, CheckoutEntry resCheckoutEntry) {
+    	return new Object[]{
+    		resCheckoutEntry.getBookCopy().getCopyNum(),
+    		memberId,
+    		isbn, 
+    		resCheckoutEntry.getBookCopy().getBook().getTitle(), 
+    		resCheckoutEntry.getCheckedOutDate(), 
+    		resCheckoutEntry.getDueDate(),
+    		resCheckoutEntry.getUser().getId()
+    	};
     }
     
     class FindMemberAndBook implements ActionListener {
