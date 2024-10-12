@@ -69,6 +69,9 @@ public class Util {
 		String authorId = getAlphaNumericString(n);
 		DataAccess da = new DataAccessFacade();
 		HashMap<String, Author> authorHash = da.readAuthorMap();
+		if (authorHash == null) {
+			return getAlphaNumericString(n);
+		}
 		while(true) {
 			if (!authorHash.containsKey(authorId)) {
 				return authorId;
