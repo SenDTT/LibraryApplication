@@ -23,6 +23,7 @@ public class CheckoutForm extends JPanel{
     private Map<String, LibraryMember> membersDatabase;
     private Map<String, Book> booksDatabase;
     private DataCallback callback;
+    private SystemController ci = new SystemController();
 
     public CheckoutForm(DataCallback callback) {
     	this.callback = callback;
@@ -101,75 +102,73 @@ public class CheckoutForm extends JPanel{
         add(tableScrollPane, gbc);
 
         // Action listeners
-        findMemberButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String memberId = memberIdField.getText().trim();
-                String isbn = isbnField.getText().trim();
-                findMemberAndBook(memberId, isbn);
-            }
-        });
+        findMemberButton.addActionListener(new FindMemberAndBook());
 
-        checkoutButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String memberId = memberIdField.getText().trim();
-                String isbn = isbnField.getText().trim();
-                DataAccess da = new DataAccessFacade();
-                CheckoutEntry resCheckoutEntry = da.checkoutBook(memberId, isbn, callback.getUser());
-                tableModel.addRow(new Object[]{
-                		resCheckoutEntry.getBookCopy().getCopyNum(),
-                		memberId,
-                		isbn, 
-                		resCheckoutEntry.getBookCopy().getBook().getTitle(), 
-                		resCheckoutEntry.getCheckedOutDate(), 
-                		resCheckoutEntry.getDueDate(),
-                		resCheckoutEntry.getUser().getId()
-                	}
-                );
-                JOptionPane.showMessageDialog(CheckoutForm.this, "Book checked out successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                memberIdField.setText("");
-                isbnField.setText("");
-                checkoutButton.setEnabled(false);
-                statusLabel.setText("Status: ");
-            }
-        });
+        checkoutButton.addActionListener(new CheckoutBook());
     }
+    
+    class CheckoutBook implements ActionListener {
+    	@Override
+        public void actionPerformed(ActionEvent e) {
+            String memberId = memberIdField.getText().trim();
+            String isbn = isbnField.getText().trim();
 
-    private void findMemberAndBook(String memberId, String isbn) {
-    	if (isbn.isEmpty()) {
-    		 statusLabel.setText("Status: Please input Book ISBN!!!");
-             checkoutButton.setEnabled(false);
-             return;
-    	}
-    	DataAccess da = new DataAccessFacade();
-    	this.membersDatabase = da.readMemberMap();
-        this.booksDatabase = da.readBooksMap();
-        LibraryMember member = membersDatabase.get(memberId);
-        Book book = booksDatabase.get(isbn);
-
-        if (book == null) {
-        	tableModel.setRowCount(0);
-            statusLabel.setText("Status: Book not found.");
+            CheckoutEntry resCheckoutEntry = ci.checkoutBook(memberId, isbn, callback.getUser());
+            tableModel.addRow(new Object[]{
+            		resCheckoutEntry.getBookCopy().getCopyNum(),
+            		memberId,
+            		isbn, 
+            		resCheckoutEntry.getBookCopy().getBook().getTitle(), 
+            		resCheckoutEntry.getCheckedOutDate(), 
+            		resCheckoutEntry.getDueDate(),
+            		resCheckoutEntry.getUser().getId()
+            	}
+            );
+            
+            JOptionPane.showMessageDialog(CheckoutForm.this, "Book checked out successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            memberIdField.setText("");
+            isbnField.setText("");
             checkoutButton.setEnabled(false);
-            return;
+            statusLabel.setText("Status: ");
         }
-        
-        loadCheckoutRecordsForBook(isbn);
-        
-        if (member == null) {
-            statusLabel.setText("Status: Member not found.");
-            checkoutButton.setEnabled(false);
-            return;
+    }
+    
+    class FindMemberAndBook implements ActionListener {
+    	public void actionPerformed(ActionEvent e) {
+            String memberId = memberIdField.getText().trim();
+            String isbn = isbnField.getText().trim();
+            try {
+            	Book foundBook = ci.findBook(isbn);
+            	LibraryMember member = ci.findMember(memberId);
+            	
+            	if (foundBook != null) {
+            		if (!foundBook.isAvailable()) {
+            			statusLabel.setText("Status: Book not available.");
+            			checkoutButton.setEnabled(false);
+            		} else {
+            			statusLabel.setText("Status: Book is available for checkout.");
+            			checkoutButton.setEnabled(true);
+            		}
+            		
+            		loadCheckoutRecordsForBook(isbn);
+            	} else {
+                	tableModel.setRowCount(0);
+                	statusLabel.setText("Status: Book not found.");
+        			checkoutButton.setEnabled(false);
+            	}
+            	
+            	if (member == null) {
+            		statusLabel.setText("Status: Member not found.");
+        			checkoutButton.setEnabled(false);
+        			return;
+            	}
+            } catch (LibrarySystemException e1) {
+    			statusLabel.setText(e1.getMessage());
+    			checkoutButton.setEnabled(false);
+            }
+            
+            
         }
-
-        if (!book.isAvailable()) {
-            statusLabel.setText("Status: Book not available.");
-            checkoutButton.setEnabled(false);
-        } else {
-            statusLabel.setText("Status: Book is available for checkout.");
-            checkoutButton.setEnabled(true);
-        } 
     }
     
     private void loadCheckoutRecordsForBook(String isbn) {
