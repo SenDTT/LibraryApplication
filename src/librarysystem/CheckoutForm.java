@@ -116,7 +116,15 @@ public class CheckoutForm extends JPanel{
             String isbn = isbnField.getText().trim();
 
             CheckoutEntry resCheckoutEntry = ci.checkoutBook(memberId, isbn, callback.getUser());
-            tableModel.addRow((Vector<?>) renderTableRow(memberId, isbn, resCheckoutEntry));
+            tableModel.addRow(new Object[]{
+            		resCheckoutEntry.getBookCopy().getCopyNum(),
+            		memberId,
+            		isbn, 
+            		resCheckoutEntry.getBookCopy().getBook().getTitle(), 
+            		resCheckoutEntry.getCheckedOutDate(), 
+            		resCheckoutEntry.getDueDate(),
+            		resCheckoutEntry.getUser().getId()
+            	});
             
             JOptionPane.showMessageDialog(CheckoutForm.this, "Book checked out successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
             memberIdField.setText("");
@@ -126,17 +134,9 @@ public class CheckoutForm extends JPanel{
         }
     }
     
-    public Object renderTableRow(String memberId, String isbn, CheckoutEntry resCheckoutEntry) {
-    	return new Object[]{
-    		resCheckoutEntry.getBookCopy().getCopyNum(),
-    		memberId,
-    		isbn, 
-    		resCheckoutEntry.getBookCopy().getBook().getTitle(), 
-    		resCheckoutEntry.getCheckedOutDate(), 
-    		resCheckoutEntry.getDueDate(),
-    		resCheckoutEntry.getUser().getId()
-    	};
-    }
+//    public Object renderTableRow(String memberId, String isbn, CheckoutEntry resCheckoutEntry) {
+//    	return ;
+//    }
     
     class FindMemberAndBook implements ActionListener {
     	public void actionPerformed(ActionEvent e) {
